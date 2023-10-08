@@ -1,0 +1,18 @@
+baseURL = 'http://example.org/'
+languageCode = 'en-us'
+title = 'Hugo ideal image'
+
+[params]
+  pictureLazy = true
+  pictureWebp = true
+  pictureLqip = true
+
+[module]
+
+[[module.mounts]]
+source = "content"
+target = "content"
+
+[[module.mounts]]
+source = "README.md"
+target = "content/about.md"

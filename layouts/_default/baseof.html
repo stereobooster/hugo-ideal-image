@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ .Title }}</title>
+    <!-- Centered viewport -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
+    />
+    <!-- Fluid viewport -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.fluid.classless.min.css"
+    /> -->
+    <!-- <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" /> -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+    /> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/mvp.css"> -->
+    <style>
+      picture {
+        display: block;
+      }
+      picture > img {
+        -webkit-backdrop-filter: blur(10px);
+                backdrop-filter: blur(10px);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      {{ block "main" . }}{{ end }}
+      <nav>
+        <details role="list">
+          <summary aria-haspopup="listbox" role="button">Theme</summary>
+          <ul role="listbox">
+            <li><a href="#" data-theme-switcher="auto">Auto</a></li>
+            <li><a href="#" data-theme-switcher="light">Light</a></li>
+            <li><a href="#" data-theme-switcher="dark">Dark</a></li>
+          </ul>
+        </details>
+      </nav>
+    </main>
+    {{ $algorithm := .Site.Params.fingerprintAlgorithm | default "sha256" }} {{
+    $js := resources.Get "js/minimal-theme-switcher.js" }} {{ $js = $js |
+    resources.Minify | resources.Fingerprint $algorithm }}
+    <script
+      type="text/javascript"
+      src="{{ $js.RelPermalink }}"
+      integrity="{{ $js.Data.Integrity }}"
+    ></script>
+  </body>
+</html>
