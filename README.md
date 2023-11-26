@@ -1,5 +1,9 @@
 # Hugo ideal image
 
+## Used by
+
+- [congo](https://github.com/jpanther/congo/pull/693)
+
 ## Introduction
 
 I created image components a couple of times before:
@@ -14,7 +18,7 @@ But browsers keep improving - now almost all modern browsers support:
 - [picture](https://caniuse.com/picture)
 - [webp](https://caniuse.com/webp)
 
-I checked existing solutions and they either don't do what I want or are complicated (for my taste):
+I checked existing solutions and they either don't do what I want or are complicated (to my taste):
 
 - [Hugo Images Module](https://hugomods.com/en/docs/images/)
 - [lazyimg](https://github.com/hugo-mods/lazyimg)
@@ -110,6 +114,6 @@ But how to do it from Markdown's point of view? Some options are:
 
 - **convention**. If there is an image `img.png` and `img_dark.png`, the system can automatically find the second image and use it for dark mode
 - **shortcode**. Will work, but this is not a markdown solution
-- Use some kind of **marker in the url** to distinguis dark-/light-mode images. For example, `#gh-dark-mode-only` or `#gh-light-mode-only`. See [Specifying the theme an image is shown to](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#specifying-the-theme-an-image-is-shown-to)
+- Use some kind of **marker in the url** to distinguish dark-/light-mode images. For example, `#gh-dark-mode-only` or `#gh-light-mode-only`. See [Specifying the theme an image is shown to](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#specifying-the-theme-an-image-is-shown-to)
 - SVGs don't need a special solution, they can handle it internally. See [Creating SVG that appears black in light mode and light in dark mode](https://stackoverflow.com/questions/67187091/creating-svg-that-appears-black-in-light-mode-and-light-in-dark-mode)
 - for black and white images [`filter: invert(1)`](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/invert) would do the trick
