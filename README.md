@@ -31,7 +31,7 @@ I checked existing solutions and they either don't do what I want or are complic
     - including for SVG
 - Responsive
   - sets HTML attribute `srcset` and resizes the image
-    - but doesn't upscale image (**not implemented**)
+    - but doesn't upscale image
   - adds `source` element for `webp` format
 - [Modern LQIP](https://github.com/transitive-bullshit/lqip-modern)
   - Can be disabled for transparent images (png, webp)
