@@ -38,6 +38,19 @@
       >
     </picture>
   {{ else }}
+    {{ $s := newScratch }}
+    {{ $s.SetInMap "sizes" "330w" 330 }}
+    {{ $s.SetInMap "sizes" "660w" 660 }}
+    {{ if gt .Width 1024 }}
+      {{ $s.SetInMap "sizes" "1024w" 1024 }}
+    {{ end }}
+    {{ if gt .Width 1320 }}
+      {{ $s.SetInMap "sizes" "2x" 1320 }}
+    {{ end }}
+    {{ if le .Width 1320 }}
+      {{ $s.SetInMap "sizes" (printf "%dw" .Width) .Width }}
+    {{ end }}
+
     <picture 
       {{ with $class }} class="{{ . }}" {{ end }}
       {{ if $lqip }}
@@ -45,7 +58,7 @@
         style="background-image:url(data:image/webp;base64,{{ $bg }});background-size:cover"
       {{ end }}
     >
-    {{ if $webp }}
+    {{ if (and $webp (ne .MediaType.SubType "webp")) }}
       <source 
         {{ if lt .Width 660 }}
           {{ with .Resize (printf "%dx%d webp" .Width .Height) }}
@@ -53,21 +66,8 @@
           {{ end }}
         {{ else }}
           srcset="
-            {{- (.Resize "330x webp").RelPermalink }} 330w,
-            {{- (.Resize "660x webp").RelPermalink }} 660w
-            {{ if gt .Width 1024 }}
-              ,{{ (.Resize "1024x webp").RelPermalink }} 1024w
-            {{ else }}
-              {{ with .Resize (printf "%dx%d webp" .Width .Height) }}
-                ,{{ .RelPermalink }} {{ .Width }}w
-              {{ end }}
-            {{ end }}
-            {{ if gt .Width 1320 }}
-              ,{{ (.Resize "1320x webp").RelPermalink }} 2x
-            {{ else }}
-              {{ with .Resize (printf "%dx%d webp" .Width .Height) }}
-                ,{{ .RelPermalink }} {{ .Width }}w
-              {{ end }}
+            {{ range $key, $size := $s.Get "sizes" }}
+              {{ ($img.Resize (printf "%dx webp" $size)).RelPermalink }} {{ $key }},
             {{ end }}"
           src="{{ (.Resize "660x webp").RelPermalink }}" 
         {{ end }}
@@ -75,7 +75,6 @@
       />
     {{ end }}
       <img
-        src="{{ .RelPermalink }}"
         width="{{ .Width }}"
         height="{{ .Height }}"
         {{ with $class }} class="{{ . }}" {{ end }}
@@ -85,18 +84,13 @@
           src="{{ .RelPermalink }}"
         {{ else }}
           srcset="
-          {{- (.Resize "330x").RelPermalink }} 330w,
-          {{- (.Resize "660x").RelPermalink }} 660w
-          {{ if gt .Width 1024 }}
-            ,{{ (.Resize "1024x").RelPermalink }} 1024w
-          {{ else }}
-            ,{{ .RelPermalink }} {{ .Width }}w
-          {{ end }}
-          {{ if gt .Width 1320 }}
-            ,{{ (.Resize "1320x").RelPermalink }} 2x
-          {{ else }}
-            ,{{ .RelPermalink }} {{ .Width }}w
-          {{ end }}"
+            {{ range $key, $size := $s.Get "sizes" }}
+              {{ if eq $size $img.Width}}
+                {{ $img.RelPermalink }} {{ $key }},
+              {{ else }}
+                {{ ($img.Resize (printf "%dx" $size)).RelPermalink }} {{ $key }},
+              {{ end }}
+            {{ end }}"
           src="{{ (.Resize "660x").RelPermalink }}"
         {{ end }}
       >
