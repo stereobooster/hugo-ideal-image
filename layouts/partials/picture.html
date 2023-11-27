@@ -4,6 +4,7 @@
 {{ $lazy := .lazy }}
 {{ $webp := .webp }}
 {{ $lqip := .lqip }}
+{{ $defaultWidth := 660 }}
 
 {{ with $img }}
   {{ if (eq .MediaType.SubType "svg") }}
@@ -38,17 +39,12 @@
       >
     </picture>
   {{ else }}
-    {{ $s := newScratch }}
-    {{ $s.SetInMap "sizes" "330w" 330 }}
-    {{ $s.SetInMap "sizes" "660w" 660 }}
+    {{ $s := slice 330 660 }}
     {{ if gt .Width 1024 }}
-      {{ $s.SetInMap "sizes" "1024w" 1024 }}
+      {{ $s = $s | append 1024 }}
     {{ end }}
     {{ if gt .Width 1320 }}
-      {{ $s.SetInMap "sizes" "2x" 1320 }}
-    {{ end }}
-    {{ if le .Width 1320 }}
-      {{ $s.SetInMap "sizes" (printf "%dw" .Width) .Width }}
+      {{ $s = $s | append 1320 }}
     {{ end }}
 
     <picture 
@@ -61,13 +57,13 @@
     {{ if (and $webp (ne .MediaType.SubType "webp")) }}
       <source 
         {{ if lt .Width 660 }}
-          {{ with .Resize (printf "%dx%d webp" .Width .Height) }}
+          {{ with .Resize (printf "%dx webp" .Width) }}
             src="{{ .RelPermalink }}"
           {{ end }}
         {{ else }}
           srcset="
-            {{ range $key, $size := $s.Get "sizes" }}
-              {{ ($img.Resize (printf "%dx webp" $size)).RelPermalink }} {{ $key }},
+            {{ range $size := $s }}
+              {{ ($img.Resize (printf "%dx webp" $size)).RelPermalink }} {{ $size }}w,
             {{ end }}"
           src="{{ (.Resize "660x webp").RelPermalink }}" 
         {{ end }}
@@ -84,11 +80,11 @@
           src="{{ .RelPermalink }}"
         {{ else }}
           srcset="
-            {{ range $key, $size := $s.Get "sizes" }}
+            {{ range $size := $s }}
               {{ if eq $size $img.Width}}
-                {{ $img.RelPermalink }} {{ $key }},
+                {{ $img.RelPermalink }} {{ $size }}w,
               {{ else }}
-                {{ ($img.Resize (printf "%dx" $size)).RelPermalink }} {{ $key }},
+                {{ ($img.Resize (printf "%dx" $size)).RelPermalink }} {{ $size }}w,
               {{ end }}
             {{ end }}"
           src="{{ (.Resize "660x").RelPermalink }}"
